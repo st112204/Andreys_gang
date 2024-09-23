@@ -3,38 +3,37 @@
 
 struct TextEditor
 {
-	std::string data;
-	int count;
-	int position;
+	std::string text;
+	int size;
+	int pos;
 
 	TextEditor()
 	{
-		data = "";
-		count = 0;
-		position = 1;
+		text = "";
+		size = 0;
+		pos = 0;
 	}
 
-	TextEditor(const std::string data, const int count, const int position)
+	TextEditor(const std::string text)
 	{
-		this->data = data;
-		this->count = count;
-		this->position = position;
+		this->text = text;
+		pos = size = text.size();
 	}
 
 	TextEditor(const TextEditor& T)
 	{
-		data = T.data;
-		count = T.count;
-		position = T.position;
+		text = T.text;
+		size = T.size;
+		pos = T.pos;
 	}
 
 	TextEditor& operator=(const TextEditor& T)
 	{
-		if (&T != this)
+		if (this != &T)
 		{
-			data = T.data;
-			count = T.count;
-			position = T.position;
+			text = T.text;
+			size = T.size;
+			pos = T.pos;
 		}
 		return *this;
 	}
@@ -44,35 +43,125 @@ struct TextEditor
 	void output()
 	{
 		std::cout 
-			<< "data: " << data << "\n"
-			<< "count: " << count << "\n"
-			<< "position: " << position << "\n\n";
+			<< "text: " << text << "\n"
+			<< "size: " << size << "\n"
+			<< "position: " << pos << "\n\n";
 	}
 
-	void addText(std::string text);
-	// Добавляет текст на позицию курсора
+	void addText(std::string text)
+	{
+		this->text.insert(pos, text);
+		size += text.size();
+		pos += text.size();
+	}
 
-	int deleteText(int k);
-	// Удаляет k символов слева от курсора
-	// Возвращает количество символов, которое было удалено
+	int deleteText(int k)
+	{
+		int size0 = size;
 
-	std::string cursorLeft(int k);
-	// Смещает курсор на k символов влево
-	// Возвращает все символы, которые находятся левее курсора
+		if (k <= 0)
+			return 0;
 
-	std::string cursorRight(int k);
-	// Смещает курсор на k символов вправо
-	// Возвращает все символы, которые находятся правее курсора
+		if (k > pos)
+			k = pos;
+		text.erase(pos - k, k);
+		size = text.size();
+		pos = pos - k;
+
+		return size0 - size;
+	}
+
+	std::string cursorLeft(int k)
+	{
+		if (pos == 0)
+			return "";
+
+		if (k <= 0)
+			return text.substr(0, pos - 1);
+
+		pos = (pos <= k ? 0 : pos - k);
+		return text.substr(0, pos - 1);
+	}
+
+	std::string cursorRight(int k)
+	{
+		if (pos == size)
+			return "";
+
+		if (k <= 0)
+			return text.substr(pos, size);
+
+		pos = (size - pos <= k ? size : pos + k);
+		return text.substr(pos, size);
+	}
+
+	void interface();
 };
 
 int main()
 {
-	TextEditor T1{ "Privet", 6, 7 };
-	T1.output();
+	int left = 8;
+	int right = 2;
+	int del = 1;
+	std::string add = "GHI";
 
-	TextEditor T2;
-	T2 = T1;
-	T2.output();
-	
+	TextEditor T("abcdef");
+	T.output();
+
+	std::cout
+		<< "added text: " << add << "\n\n";
+	T.addText(add);
+	T.output();
+
+	std::cout
+		<< "required delete: " << del << "\n"
+		<< "deleted: " << T.deleteText(del) << "\n\n";
+	T.output();
+
+	std::cout
+		<< "required move left: " << left <<"\n"
+		<< "text before new position: " << T.cursorLeft(left) << "\n\n";
+	T.output();
+
+	std::cout
+		<< "required move right: " << right << "\n"
+		<< "text after new position: " << T.cursorRight(right) << "\n\n";
+	T.output();
+
 	return 0;
 }
+
+//int main()
+//{
+//	TextEditor T("abcdef");
+//	T.output();
+//
+//	T.cursorLeft(9);
+//	T.output();
+//
+//	T.cursorRight(6);
+//	T.output();
+//
+//	T.cursorLeft(5);
+//	T.output();
+//
+//	T.deleteText(3);
+//	T.output();
+//
+//	T.addText("A");
+//	T.output();
+//
+//	T.deleteText(3);
+//	T.output();
+//
+//	T.cursorRight(5);
+//	T.output();
+//
+//	T.deleteText(5);
+//	T.output();
+//
+//	T.addText("Privet");
+//	T.output();
+//
+//	return 0;
+//}

@@ -1,2 +1,6 @@
 ﻿  main.cpp
+C:\Andreys_gang\TextEditor\main.cpp(20,25): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Andreys_gang\TextEditor\main.cpp(54,20): warning C4267: +=: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Andreys_gang\TextEditor\main.cpp(55,19): warning C4267: +=: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Andreys_gang\TextEditor\main.cpp(68,19): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
   TextEditor.vcxproj -> C:\Andreys_gang\TextEditor\x64\Debug\TextEditor.exe
