@@ -1,11 +1,17 @@
 #include <iostream>
 #include <string>
+#include <conio.h>
 
-struct TextEditor
+class TextEditor
 {
+
+private:
+
 	std::string text;
 	int size;
 	int pos;
+
+public:
 
 	TextEditor()
 	{
@@ -43,9 +49,16 @@ struct TextEditor
 	void output()
 	{
 		std::cout 
+			<< "YOUR DOCUMENT \n" 
+			<< "     ";
+		for (int i = 0; i < pos; ++i)
+			std::cout << " ";
+		std::cout << "v" << "\n";
+		std::cout
 			<< "text: " << text << "\n"
-			<< "size: " << size << "\n"
-			<< "position: " << pos << "\n\n";
+			<< "position: " << pos << "\n"
+			<< "size: " << size << "\n\n";
+
 	}
 
 	void addText(std::string text)
@@ -94,74 +107,102 @@ struct TextEditor
 		pos = (size - pos <= k ? size : pos + k);
 		return text.substr(pos, size);
 	}
-
-	void interface();
 };
+
+void help()
+{
+	std::cout
+		<< "COMMANDS\n"
+		<< "a ............... add text \n"
+		<< "d ............... delete text \n"
+		<< "l ............... cursor left \n"
+		<< "r ............... cursor right \n"
+		<< "i ............... document status \n"
+		<< "c ............... clear screen \n"
+		<< "esc ............. exit \n"
+		<< "other buttons ... this message \n\n";
+
+	return;
+}
+
+void interface()
+{
+	TextEditor T;
+	std::string str;
+	char buffer[256];
+	int k;
+
+	std::cout << "Welcome to TextEditor! \n\n";
+	help();
+	T.output();
+
+	while (true)
+	{
+		char x = _getch();
+
+		switch (x)
+		{
+		case 'a':
+			std::cout << "input text: ";
+			std::getline(std::cin, str);
+			std::cout << "\n";
+			T.addText(str);
+			T.output();
+			break;
+
+		case 'd':
+			std::cout << "input number of characters: ";
+			std::cin >> buffer;
+			k = atoi(buffer);
+			std::cout
+				<< "\n"
+				<< "needed to be deleted: " << k << "\n"
+				<< "deleted: " << T.deleteText(k) << "\n\n";
+			T.output();
+			break;
+
+		case 'l':
+			std::cout << "input left-shift value: ";
+			std::cin >> buffer;
+			k = atoi(buffer);
+			std::cout
+				<< "\n"
+				<< "text before new position: " << T.cursorLeft(k) << "\n\n";
+			T.output();
+			break;
+
+		case 'r':
+			std::cout << "input right-shift value: ";
+			std::cin >> buffer;
+			k = atoi(buffer);
+			std::cout
+				<< "\n"
+				<< "text after new position: " << T.cursorRight(k) << "\n\n";
+			T.output();
+			break;
+
+		case 'i':
+			T.output();
+			break;
+
+		case 'c':
+			system("cls");
+			help();
+			break;
+
+		case 27:
+			return;
+
+		default:
+			help();
+			break;
+		}
+	}
+}
 
 int main()
 {
-	int left = 8;
-	int right = 2;
-	int del = 1;
-	std::string add = "GHI";
-
-	TextEditor T("abcdef");
-	T.output();
-
-	std::cout
-		<< "added text: " << add << "\n\n";
-	T.addText(add);
-	T.output();
-
-	std::cout
-		<< "required delete: " << del << "\n"
-		<< "deleted: " << T.deleteText(del) << "\n\n";
-	T.output();
-
-	std::cout
-		<< "required move left: " << left <<"\n"
-		<< "text before new position: " << T.cursorLeft(left) << "\n\n";
-	T.output();
-
-	std::cout
-		<< "required move right: " << right << "\n"
-		<< "text after new position: " << T.cursorRight(right) << "\n\n";
-	T.output();
+	interface();
 
 	return 0;
 }
-
-//int main()
-//{
-//	TextEditor T("abcdef");
-//	T.output();
-//
-//	T.cursorLeft(9);
-//	T.output();
-//
-//	T.cursorRight(6);
-//	T.output();
-//
-//	T.cursorLeft(5);
-//	T.output();
-//
-//	T.deleteText(3);
-//	T.output();
-//
-//	T.addText("A");
-//	T.output();
-//
-//	T.deleteText(3);
-//	T.output();
-//
-//	T.cursorRight(5);
-//	T.output();
-//
-//	T.deleteText(5);
-//	T.output();
-//
-//	T.addText("Privet");
-//	T.output();
-//
-//	return 0;
-//}
