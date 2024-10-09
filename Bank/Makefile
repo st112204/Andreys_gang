@@ -1,42 +1,27 @@
-
-# Имя исполняемого файла
-TARGET = Bank
-
-# Компилятор
+# Определение компилятора
 CXX = g++
-
-# Флаги компиляции
+# Определение флагов компиляции
 CXXFLAGS = -Wall -Wextra -std=c++11
 
-# Исходные файлы
-SRCS = Bank.cpp
+# Определение целевого исполняемого файла
+TARGET = bank
 
-# Объектные файлы
-OBJS = $(SRCS:.cpp=.o)
+# Определение объектных файлов
+OBJS = main.o bank.o
 
-# Правило по умолчанию
-all: $(TARGET)
-
-# Правило для сборки исполняемого файла
+# Правило для сборки целевого файла
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
+	@$(MAKE) clean
 
-# Правило для сборки объектных файлов
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+# Правило для сборки объектного файла из main.cpp
+main.o: main.cpp bank.h
+	$(CXX) $(CXXFLAGS) -c main.cpp
 
-# Правило для очистки
+# Правило для сборки объектного файла из bank.cpp
+bank.o: bank.cpp bank.h
+	$(CXX) $(CXXFLAGS) -c bank.cpp
+
+# Правило для удаления объектных файлов
 clean:
-	rm -f $(OBJS) $(TARGET)
-
-#Test: test.o
-#	gcc test.o -o Test
-#
-#test.o: test.cpp
-#       gcc -c test.cpp -o test.o
-
-#TextEditor : main.o
-#	gcc main.o -o TextEditor
-
-#main.o : main.cpp
-#	gcc -c main.cpp -o main.o
+	rm -f $(OBJS)

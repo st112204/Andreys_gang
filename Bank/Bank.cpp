@@ -1,69 +1,92 @@
-#include <string>
-#include <iostream>
+#include "bank.h"
 
-class BankAccount
-{
+// BankAccount
 
-private:
-	
-	std::string accountNubmer;
-	double balance;
-	std::string accountHolder;
-
-public:
-
-	BankAccount()
+	BankAccount::BankAccount()
 	{
 		accountNubmer = "";
 		balance = 0;
 		accountHolder = "";
+
+		std::cout << "Default bank account CREATED" << "\n\n";
 	}
 
-	BankAccount(std::string number, double balance, std::string holder)
+	BankAccount::BankAccount(std::string number, double balance, std::string holder)
 	{
 		this->accountNubmer = number;
 		this->balance = balance;
 		this->accountHolder = holder;
+
+		std::cout << "Bank account CREATED" << "\n";
+		PrintAccountInfo();
 	}
 
-	~BankAccount() {};
+	BankAccount::~BankAccount() {};
 
-	void Deposit(double amount)
+	void BankAccount::Deposit(double amount)
 	{
-		balance += amount;
-		return;
-	}
-
-	void Withdraw(double amount)
-	{
-		if (balance < amount)
+		if (amount >= 0)
 		{
-			std::cout << "The balance of account number " << accountNubmer << " is " << balance << ",\n"
-				<< "which is not enough to withdraw " << amount << "\n\n";
+			balance += amount;
+			std::cout
+				<< "Account #" << this->accountNubmer << "\n"
+				<< "Success deposit: " << amount << "\n\n";
 		}
 		else
 		{
-			balance -= amount;
-			return;
+			std::cout
+				<< "Account #" << this->accountNubmer << "\n"
+				<< "Error: deposit should be positive" << "\n\n";
 		}
+
+		return;
 	}
 
-	std::string GetAccountNumber()
+	void BankAccount::Withdraw(double amount)
+	{
+		if (amount >= 0)
+		{
+			if (balance < amount)
+			{
+				std::cout
+					<< "Account #" << this->accountNubmer << "\n"
+					<< "Balance: " << this->balance << "\n"
+					<< "Not enough to withdraw: " << amount << "\n\n";
+			}
+			else
+			{
+				balance -= amount;
+				std::cout
+					<< "Account #" << this->accountNubmer << "\n"
+					<< "Success withdrawal: " << amount << "\n\n";
+			}
+		}
+		else
+		{
+			std::cout
+				<< "Account #" << this->accountNubmer << "\n"
+				<< "Error: withdrawal should be positive" << "\n\n";
+		}
+
+		return;
+	}
+
+	std::string BankAccount::GetAccountNumber()
 	{
 		return accountNubmer;
 	}
 
-	double GetBalance()
+	double BankAccount::GetBalance()
 	{
 		return balance;
 	}
 
-	std::string GetAccountHolder()
+	std::string BankAccount::GetAccountHolder()
 	{
 		return accountHolder;
 	}
 
-	void PrintAccountInfo()
+	void BankAccount::PrintAccountInfo()
 	{
 		std::cout
 			<< "Number: " << accountNubmer << "\n"
@@ -71,7 +94,7 @@ public:
 			<< "Holder: " << accountHolder << "\n\n";
 	}
 
-	BankAccount& operator=(const BankAccount& b)
+	BankAccount& BankAccount::operator=(const BankAccount& b)
 	{
 		if (this != &b)
 		{
@@ -82,98 +105,76 @@ public:
 
 		return *this;
 	}
-};
 
-class Bank
+
+// Bank
+
+Bank::Bank()
+{
+	accounts = nullptr;
+	size = 0;
+
+	std::cout << "Bank CREATED" << "\n\n";
+}
+
+Bank::~Bank()
+{
+	delete[] accounts;
+}
+
+void Bank::AddAccount(BankAccount& account)
 {
 
-private:
-
-	BankAccount** accounts;
-	int size;
-
-public:
-
-	Bank()
+	BankAccount** newAccounts = new BankAccount * [size + 1];
+	for (int i = 0; i < size; ++i)
 	{
-		accounts = nullptr;
-		size = 0;
+		*(newAccounts + i) = *(accounts + i);
 	}
 
-	~Bank()
-	{
-		delete[] accounts;
-	}
+	delete[] accounts;
+	accounts = newAccounts;
 
-	void AddAccount(BankAccount& account)
-	{
+	*(accounts + size) = &account;
 
-		BankAccount** newAccounts = new BankAccount*[size + 1];
-		for (int i = 0; i < size; ++i)
-		{
-			*(newAccounts + i) = *(accounts + i);
-		}
+	++size;
 
-		delete[] accounts;
-		accounts = newAccounts;
+	std::cout
+		<< "Account #" << account.GetAccountNumber() << "\n"
+		<< "ADDED to bank" << "\n\n";
 
-		*(accounts + size) = &account;
+	return;
+}
 
-		++size;
-
-		return;
-	}
-
-	double GetTotalBalance()
-	{
-		double totalBalance = 0;
-
-		for (int i = 0; i < size; ++i)
-		{
-			totalBalance += (**(accounts + i)).GetBalance();
-		}
-
-		return totalBalance;
-	}
-
-	void PrintAllAccounts()
-	{
-		std::cout << "All accounts : \n\n";
-
-		for (int i = 0; i < size; ++i)
-			(**(accounts + i)).PrintAccountInfo();
-
-		return;
-	}
-};
-
-
-int main()
+double Bank::GetTotalBalance()
 {
-	// создайте несколько объектов класса `BankAccount`
+	double totalBalance = 0;
 
-	BankAccount A("1", 100.11, "Aaa");
-	BankAccount B("2", 100.11, "Bbb");
-	BankAccount C("3", 100.11, "Ccc");
+	for (int i = 0; i < size; ++i)
+	{
+		totalBalance += (**(accounts + i)).GetBalance();
+	}
 
-	// добавьте их в объект класса `Bank`
+	return totalBalance;
+}
 
-	Bank myBank;
+void Bank::PrintTotalBalance()
+{
+	std::cout
+		<< "TOTAL BALANCE: " << GetTotalBalance() << "\n\n";
+}
 
-	myBank.AddAccount(A);
-	myBank.AddAccount(B);
-	myBank.AddAccount(C);
+void Bank::PrintAllAccounts()
+{
+	std::cout
+		<< "------------------" << "\n\n"
+		<< "ALL ACCOUNTS :" << "\n\n";
 
-	// выполните различные операции с счетами, такие как депозит и снятие средств
-	
-	A.Deposit(1000.1);
-	B.Withdraw(50.1);
-	C.Withdraw(200.1);
+	for (int i = 0; i < size; ++i)
+		(**(accounts + i)).PrintAccountInfo();
 
-	// выведите информацию обо всех счетах и общий баланс
+	std::cout
+		<< "------------------" << "\n\n";
 
-	myBank.PrintAllAccounts();
-	std::cout << "Total balance: " << myBank.GetTotalBalance() << "\n\n";
+	return;
 
-	return 0;
 }
