@@ -195,7 +195,7 @@ void interface()
 			break;
 
 		case 'c':
-			system("cls");
+			system("clear");
 			help();
 			break;
 
