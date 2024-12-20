@@ -36,7 +36,12 @@ class Dataset
 	size_t col_num; // Number of columns (properties)
 	BaseCol** col_array; // Data: array of pointers to Col columns
 
+	
+
 public:
+
+	//
+	std::string path;
 
 	Dataset(size_t row_num, size_t col_num, std::string path);
 	~Dataset();

@@ -23,12 +23,15 @@ Col<T>::~Col() { delete[] data; }
 Dataset::Dataset(size_t row_num, size_t col_num, std::string path) :
 	row_num(row_num),
 	col_num(col_num),
-	col_array(new BaseCol* [col_num]) // Initialize col_array with an array of BaseCol pointers
+	col_array(new BaseCol* [col_num]), // Initialize col_array with an array of BaseCol pointers
+	path(path)
 {
+
 	std::ifstream file(path);
 
 	if (!file.is_open())
 	{
+
 		std::cerr << "Error opening file!" << std::endl;
 		return;
 	}
