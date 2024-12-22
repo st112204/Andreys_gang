@@ -2,11 +2,32 @@
 
 int main()
 {
-	Dataset myDataset(4, 3, "dataset.txt");
-	// Dataset myDataset(number of objects, number of properties, path to file);
+	std::string file_path = "dataset.csv";
+	
+	Dataset D;
 
+	try
+	{
+		D = Dataset(5, 3, file_path, ';');
+		// By default:
+		// D.col_array = (tmp).col_array
+		// D.col_array -> [ MEMORY ] <- (tmp).col_array
+	}
+		// delete (tmp):
+		// delete col_array[i], delete col_array
+		// D.col_array -> [  X  ]
 
-	std::cout << myDataset.path;
+	// solutions:
+	// 1. Copy constructor [v]
+	// 2. Move constructor [ ]
+	// 3. Smart pointers   [ ]
+
+	catch (const std::exception& e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+
+	D.printInfo();
 
 	return 0;
 }
